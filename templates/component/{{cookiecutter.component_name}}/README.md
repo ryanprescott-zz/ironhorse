@@ -67,8 +67,11 @@ Configuration is managed via environment variables:
 ### Setup
 
 ```bash
-# Install dependencies
-uv pip install -e ".[dev]"
+# Install shared schemas package (required dependency)
+pip install -e ../shared
+
+# Install component with dev dependencies
+pip install -e ".[dev]"
 
 # Run tests
 pytest
@@ -76,6 +79,16 @@ pytest
 # Run with coverage
 pytest --cov={{cookiecutter.component_name.replace('-', '_')}} --cov-report=html
 ```
+
+### Note on Shared Package
+
+This component depends on the `shared` package for common data models and schemas. The shared package must be installed before this component can be used:
+
+- **Document schema**: Standard document structure for parsed content
+- **Chunk schema**: Text chunks for splitting/RAG operations
+- **APIResponse**: Consistent API response wrapper
+
+The shared package is located at `../shared` relative to this component.
 
 ### Running the API Server
 

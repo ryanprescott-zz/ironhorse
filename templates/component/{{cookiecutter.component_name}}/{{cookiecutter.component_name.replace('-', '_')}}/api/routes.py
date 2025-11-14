@@ -7,8 +7,8 @@ from typing import Any, Dict
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-# Import shared schemas - adjust path as needed
-# from shared.schemas import APIResponse, ResponseStatus
+# Import shared schemas
+from shared.schemas import APIResponse, ResponseStatus
 
 router = APIRouter()
 
@@ -33,8 +33,8 @@ class ProcessResponse(BaseModel):
     result: Dict[str, Any]
 
 
-@router.post("/process")
-async def process(request: ProcessRequest) -> Dict[str, Any]:
+@router.post("/process", response_model=APIResponse[ProcessResponse])
+async def process(request: ProcessRequest) -> APIResponse[ProcessResponse]:
     """Process input data.
 
     Args:
@@ -48,13 +48,11 @@ async def process(request: ProcessRequest) -> Dict[str, Any]:
     """
     try:
         # TODO: Implement actual processing logic
-        result = {"processed": True}
+        result = ProcessResponse(result={"processed": True})
 
-        return {
-            "status": "success",
-            "data": result,
-            "error": None,
-            "metadata": {}
-        }
+        return APIResponse.success(
+            data=result,
+            metadata={"component": "{{cookiecutter.component_name}}"}
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
