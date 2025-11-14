@@ -171,3 +171,75 @@ class TestDoclingParser:
             # Cleanup
             if test_file.exists():
                 test_file.unlink()
+
+    @patch('docling_parser.core.docling_parser.DocumentConverter')
+    def test_process_with_string_input(self, mock_converter: Mock) -> None:
+        """Test process method with string input (Component interface)."""
+        # Mock the converter result
+        mock_result = MagicMock()
+        mock_result.document.export_to_markdown.return_value = "Test content"
+        mock_result.document.tables = []
+
+        mock_converter_instance = MagicMock()
+        mock_converter_instance.convert.return_value = mock_result
+        mock_converter.return_value = mock_converter_instance
+
+        # Create test file
+        test_file = Path(__file__).parent / "test_data" / "test_process.pdf"
+        test_file.parent.mkdir(exist_ok=True)
+        test_file.touch()
+
+        try:
+            parser = DoclingParser()
+            # Test with string input (file path)
+            document = parser.process(str(test_file))
+
+            assert isinstance(document, Document)
+            assert document.content == "Test content"
+        finally:
+            # Cleanup
+            if test_file.exists():
+                test_file.unlink()
+
+    @patch('docling_parser.core.docling_parser.DocumentConverter')
+    def test_process_with_dict_input(self, mock_converter: Mock) -> None:
+        """Test process method with dict input (Component interface)."""
+        # Mock the converter result
+        mock_result = MagicMock()
+        mock_result.document.export_to_markdown.return_value = "Test content"
+        mock_result.document.tables = []
+
+        mock_converter_instance = MagicMock()
+        mock_converter_instance.convert.return_value = mock_result
+        mock_converter.return_value = mock_converter_instance
+
+        # Create test file
+        test_file = Path(__file__).parent / "test_data" / "test_process_dict.pdf"
+        test_file.parent.mkdir(exist_ok=True)
+        test_file.touch()
+
+        try:
+            parser = DoclingParser()
+            # Test with dict input
+            document = parser.process({
+                'file_path': str(test_file),
+                'doc_id': 'custom_id_123'
+            })
+
+            assert isinstance(document, Document)
+            assert document.doc_id == 'custom_id_123'
+        finally:
+            # Cleanup
+            if test_file.exists():
+                test_file.unlink()
+
+    @patch('docling_parser.core.docling_parser.DocumentConverter')
+    def test_process_with_invalid_input(self, mock_converter: Mock) -> None:
+        """Test process method with invalid input type."""
+        parser = DoclingParser()
+
+        with pytest.raises(ValueError, match="Invalid input type"):
+            parser.process(12345)  # Invalid type
+
+        with pytest.raises(ValueError, match="must contain 'file_path' key"):
+            parser.process({'wrong_key': 'value'})

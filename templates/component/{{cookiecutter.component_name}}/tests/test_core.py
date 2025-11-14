@@ -12,9 +12,24 @@ class Test{{cookiecutter.component_class_name}}:
         component = {{cookiecutter.component_class_name}}()
         assert component is not None
 
-    def test_process(self) -> None:
-        """Test process method."""
+    def test_process_with_dict(self) -> None:
+        """Test process method with dict input."""
         component = {{cookiecutter.component_class_name}}()
         result = component.process({"test": "data"})
         assert result is not None
         assert isinstance(result, dict)
+        assert "result" in result
+
+    def test_process_with_string(self) -> None:
+        """Test process method with string input."""
+        component = {{cookiecutter.component_class_name}}()
+        result = component.process("test input")
+        assert result is not None
+        assert isinstance(result, dict)
+        assert "input" in result
+
+    def test_process_with_invalid_input(self) -> None:
+        """Test process method with invalid input type."""
+        component = {{cookiecutter.component_class_name}}()
+        with pytest.raises(ValueError, match="Unsupported input type"):
+            component.process(12345)  # Invalid type

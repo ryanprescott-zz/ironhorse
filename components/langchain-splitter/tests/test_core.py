@@ -188,3 +188,92 @@ class TestLangChainSplitter:
         # Chunks should not have leading/trailing whitespace
         for chunk in chunks:
             assert chunk.text == chunk.text.strip()
+
+    def test_process_with_string_input(self) -> None:
+        """Test process method with string input (Component interface)."""
+        splitter = LangChainSplitter(chunk_size=50, chunk_overlap=10)
+
+        text = "This is a test sentence. " * 10
+        chunks = splitter.process(text)
+
+        assert len(chunks) > 0
+        assert all(isinstance(chunk, Chunk) for chunk in chunks)
+
+    def test_process_with_document_input(self) -> None:
+        """Test process method with Document input (Component interface)."""
+        splitter = LangChainSplitter(chunk_size=50, chunk_overlap=10)
+
+        document = Document(
+            doc_id="doc_process_test",
+            content="Test content. " * 10,
+            metadata=DocumentMetadata(source="test.pdf", file_type="pdf"),
+        )
+
+        chunks = splitter.process(document)
+
+        assert len(chunks) > 0
+        assert all(isinstance(chunk, Chunk) for chunk in chunks)
+        assert all(chunk.metadata.source_doc_id == "doc_process_test" for chunk in chunks)
+
+    def test_process_with_document_list(self) -> None:
+        """Test process method with list of Documents (Component interface)."""
+        splitter = LangChainSplitter(chunk_size=50, chunk_overlap=10)
+
+        documents = [
+            Document(
+                doc_id=f"doc_{i}",
+                content=f"Content {i}. " * 10,
+                metadata=DocumentMetadata(source=f"test_{i}.pdf", file_type="pdf"),
+            )
+            for i in range(2)
+        ]
+
+        chunks = splitter.process(documents)
+
+        assert len(chunks) > 0
+        assert all(isinstance(chunk, Chunk) for chunk in chunks)
+
+    def test_process_with_dict_text_input(self) -> None:
+        """Test process method with dict containing text (Component interface)."""
+        splitter = LangChainSplitter(chunk_size=50, chunk_overlap=10)
+
+        data = {
+            'text': "Test text. " * 10,
+            'source_id': 'custom_source_123'
+        }
+
+        chunks = splitter.process(data)
+
+        assert len(chunks) > 0
+        assert all(chunk.metadata.source_doc_id == 'custom_source_123' for chunk in chunks)
+
+    def test_process_with_dict_document_input(self) -> None:
+        """Test process method with dict containing document (Component interface)."""
+        splitter = LangChainSplitter(chunk_size=50, chunk_overlap=10)
+
+        document = Document(
+            doc_id="doc_dict_test",
+            content="Dict test content. " * 10,
+            metadata=DocumentMetadata(source="test.pdf", file_type="pdf"),
+        )
+
+        chunks = splitter.process({'document': document})
+
+        assert len(chunks) > 0
+        assert all(chunk.metadata.source_doc_id == "doc_dict_test" for chunk in chunks)
+
+    def test_process_with_invalid_input(self) -> None:
+        """Test process method with invalid input types."""
+        splitter = LangChainSplitter(chunk_size=50, chunk_overlap=10)
+
+        # Test with invalid type
+        with pytest.raises(ValueError, match="Invalid input type"):
+            splitter.process(12345)
+
+        # Test with dict missing required keys
+        with pytest.raises(ValueError, match="must contain 'text' or 'document' key"):
+            splitter.process({'wrong_key': 'value'})
+
+        # Test with list of non-Documents
+        with pytest.raises(ValueError, match="List input must contain Document objects"):
+            splitter.process(['string1', 'string2'])

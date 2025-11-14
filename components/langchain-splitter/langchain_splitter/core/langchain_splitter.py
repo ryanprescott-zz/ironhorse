@@ -7,11 +7,12 @@ text splitters and converting to the standard Chunk format.
 import sys
 import uuid
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 # Add shared to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
+from shared.component import Component
 from shared.schemas import Chunk, ChunkMetadata, Document
 
 try:
@@ -20,12 +21,14 @@ except ImportError:
     RecursiveCharacterTextSplitter = None
 
 
-class LangChainSplitter:
+class LangChainSplitter(Component):
     """Text splitter using LangChain.
 
     This class provides text splitting capabilities using LangChain's
     RecursiveCharacterTextSplitter, converting split text to the standard
     Chunk format.
+
+    Implements the Component interface with process() method for text splitting.
 
     Attributes:
         chunk_size: Size of each chunk in characters.
@@ -75,6 +78,54 @@ class LangChainSplitter:
             keep_separator=keep_separator,
             strip_whitespace=strip_whitespace,
         )
+
+    def process(self, data: Any) -> Any:
+        """Process input data (implements Component interface).
+
+        This is the main entry point for the component. It accepts either:
+        - A string (text to split)
+        - A Document object (will split the content)
+        - A list of Document objects (will split all)
+        - A dict with 'text' or 'document' key
+
+        Args:
+            data: Input data - string, Document, list of Documents, or dict.
+
+        Returns:
+            List of Chunk objects.
+
+        Raises:
+            ValueError: If data format is invalid.
+        """
+        if isinstance(data, str):
+            # Simple string input - treat as text to split
+            return self.split_text(data)
+        elif isinstance(data, Document):
+            # Single document input
+            return self.split_document(data)
+        elif isinstance(data, list):
+            # Assume list of documents
+            if all(isinstance(item, Document) for item in data):
+                return self.split_documents(data)
+            else:
+                raise ValueError("List input must contain Document objects")
+        elif isinstance(data, dict):
+            # Dict input - extract text or document
+            if 'text' in data:
+                text = data['text']
+                source_id = data.get('source_id')
+                return self.split_text(text, source_id=source_id)
+            elif 'document' in data:
+                return self.split_document(data['document'])
+            else:
+                raise ValueError(
+                    "Dict input must contain 'text' or 'document' key"
+                )
+        else:
+            raise ValueError(
+                f"Invalid input type: {type(data)}. "
+                "Expected str, Document, list of Documents, or dict."
+            )
 
     def split_text(
         self,

@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Union
 # Add shared to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
+from shared.component import Component
 from shared.schemas import Document, DocumentMetadata
 
 try:
@@ -23,11 +24,13 @@ except ImportError:
     InputFormat = None
 
 
-class DoclingParser:
+class DoclingParser(Component):
     """Document parser using Docling.
 
     This class provides document parsing capabilities using the Docling library,
     converting parsed documents to the standard Document format.
+
+    Implements the Component interface with process() method for document parsing.
 
     Attributes:
         converter: Docling DocumentConverter instance.
@@ -50,6 +53,39 @@ class DoclingParser:
 
         self.converter = DocumentConverter()
         self.extract_tables = extract_tables
+
+    def process(self, data: Any) -> Any:
+        """Process input data (implements Component interface).
+
+        This is the main entry point for the component. It accepts either
+        a file path string or a dict with 'file_path' and optional 'doc_id'.
+
+        Args:
+            data: Either a string (file path) or dict with 'file_path' and
+                  optional 'doc_id' keys.
+
+        Returns:
+            Parsed Document object.
+
+        Raises:
+            ValueError: If data format is invalid.
+            FileNotFoundError: If file does not exist.
+        """
+        if isinstance(data, str):
+            # Simple string input - treat as file path
+            return self.parse_document(data)
+        elif isinstance(data, dict):
+            # Dict input - extract file_path and optional doc_id
+            file_path = data.get('file_path')
+            if not file_path:
+                raise ValueError("Dict input must contain 'file_path' key")
+            doc_id = data.get('doc_id')
+            return self.parse_document(file_path, doc_id=doc_id)
+        else:
+            raise ValueError(
+                f"Invalid input type: {type(data)}. "
+                "Expected str (file path) or dict with 'file_path' key."
+            )
 
     def parse_document(
         self,
