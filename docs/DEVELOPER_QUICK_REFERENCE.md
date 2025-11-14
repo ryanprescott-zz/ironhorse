@@ -46,7 +46,7 @@ source .venv/bin/activate  # macOS/Linux
 # or: .venv\Scripts\activate  # Windows
 
 # Install shared schemas
-pip install -e ../../shared/
+pip install -e ../shared/
 
 # Install component with dev deps
 pip install -e ".[dev]"
@@ -176,10 +176,10 @@ components/<component-name>/
 ### Shared Resources
 
 ```
-shared/schemas/        # Common data models
-├── document.py        # Document schema
-├── chunk.py          # Chunk schema
-└── response.py       # API response schema
+components/shared/schemas/  # Common data models
+├── document.py             # Document schema
+├── chunk.py                # Chunk schema
+└── response.py             # API response schema
 ```
 
 ### Docker Files
@@ -284,10 +284,10 @@ pip install -e ".[dev]"
 ### Update Shared Schemas
 
 ```bash
-# Edit shared/schemas/<schema>.py
+# Edit components/shared/schemas/<schema>.py
 # Then reinstall in your component
 cd components/<component>
-pip install -e ../../shared/
+pip install -e ../shared/
 ```
 
 ### Add New API Endpoint
@@ -313,7 +313,7 @@ pip install -e ../../shared/
 
 ```bash
 # Ensure shared is installed
-pip install -e ../../shared/
+pip install -e ../shared/
 
 # Check Python path
 python -c "import sys; print('\n'.join(sys.path))"
@@ -520,7 +520,7 @@ git push origin feature/<component>
 - **Full Dev Guide**: `docs/COMPONENT_DEVELOPMENT_GUIDE.md`
 - **Quick Start**: `/QUICKSTART.md`
 - **Component Examples**: `components/docling-parser/`, `components/langchain-splitter/`
-- **Shared Schemas**: `shared/schemas/`
+- **Shared Schemas**: `components/shared/schemas/`
 
 ---
 

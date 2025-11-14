@@ -74,11 +74,7 @@ source .venv/bin/activate
 pip install --upgrade pip
 
 # Install shared schemas
-cd ../..
-pip install -e shared/
-
-# Go back to component
-cd components/embedding-generator
+pip install -e ../shared/
 
 # Install component with dev dependencies
 pip install -e ".[dev]"
@@ -843,7 +839,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install uv
 
-COPY shared/ /app/shared/
+COPY components/shared/ /app/shared/
 COPY components/embedding-generator/ /app/embedding-generator/
 
 WORKDIR /app/embedding-generator

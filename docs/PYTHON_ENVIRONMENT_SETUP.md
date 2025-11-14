@@ -29,7 +29,7 @@ source .venv/bin/activate  # macOS/Linux
 # or: .venv\Scripts\activate  # Windows
 
 # Install shared schemas
-pip install -e ../../shared/
+pip install -e ../shared/
 
 # Install component with dev dependencies
 pip install -e ".[dev]"
@@ -159,7 +159,7 @@ where python    # Windows
 All components depend on the shared schemas package:
 
 ```bash
-pip install -e ../../shared/
+pip install -e ../shared/
 ```
 
 **What this does:**
@@ -361,7 +361,7 @@ Create a separate virtual environment for each component:
 cd components/docling-parser
 python3.11 -m venv .venv
 source .venv/bin/activate
-pip install -e ../../shared/
+pip install -e ../shared/
 pip install -e ".[dev]"
 pytest
 
@@ -369,7 +369,7 @@ pytest
 cd components/langchain-splitter
 python3.11 -m venv .venv
 source .venv/bin/activate
-pip install -e ../../shared/
+pip install -e ../shared/
 pip install -e ".[dev]"
 pytest
 ```
@@ -389,7 +389,7 @@ python3.11 -m venv .venv
 source .venv/bin/activate
 
 # Install shared schemas
-pip install -e shared/
+pip install -e components/shared/
 
 # Install all components
 pip install -e "components/docling-parser[dev]"
@@ -443,7 +443,7 @@ ModuleNotFoundError: No module named 'shared'
 **Solution:**
 ```bash
 # Install shared schemas
-pip install -e ../../shared/
+pip install -e ../shared/
 
 # Verify
 python -c "import shared; print(shared.__file__)"
@@ -637,7 +637,7 @@ uv venv
 source .venv/bin/activate
 
 # Install shared schemas (much faster!)
-uv pip install -e ../../shared/
+uv pip install -e ../shared/
 
 # Install component with dev dependencies (much faster!)
 uv pip install -e ".[dev]"
@@ -786,7 +786,7 @@ source .venv/bin/activate
 
 # Install dependencies
 echo "Installing shared schemas..."
-pip install -e ../../shared/
+pip install -e ../shared/
 
 echo "Installing component with dev dependencies..."
 pip install -e ".[dev]"
@@ -909,7 +909,7 @@ source .venv/bin/activate
 pip install --upgrade pip
 
 # 6. Install shared schemas
-pip install -e ../../shared/
+pip install -e ../shared/
 # Processing .../shared
 # Successfully installed shared-schemas-0.1.0
 
@@ -958,7 +958,7 @@ deactivate
 # Setup (one time)
 python3.11 -m venv .venv
 source .venv/bin/activate
-pip install -e ../../shared/
+pip install -e ../shared/
 pip install -e ".[dev]"
 
 # Daily workflow

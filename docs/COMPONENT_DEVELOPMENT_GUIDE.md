@@ -182,19 +182,14 @@ source .venv/bin/activate  # macOS/Linux
 The component needs access to the shared schemas. From your component directory:
 
 ```bash
-# Navigate to project root
-cd ../..
-
 # Install shared schemas in editable mode
-pip install -e shared/
+pip install -e ../shared/
 
 # Or with uv (faster)
-uv pip install -e shared/
+uv pip install -e ../shared/
 ```
 
 ### Step 2: Install Component Dependencies
-
-Navigate back to your component:
 
 ```bash
 cd components/embedding-generator
@@ -761,7 +756,7 @@ RUN apt-get update && apt-get install -y \
 RUN pip install uv
 
 # Copy shared schemas
-COPY shared/ /app/shared/
+COPY components/shared/ /app/shared/
 
 # Copy component files
 COPY components/embedding-generator/ /app/embedding-generator/
@@ -1062,7 +1057,7 @@ git push origin feature/embedding-generator
 **Solution**:
 ```bash
 # Make sure shared is installed
-pip install -e ../../shared/
+pip install -e ../shared/
 
 # Verify Python path includes project root
 echo $PYTHONPATH
@@ -1131,9 +1126,7 @@ python3.11 -m venv .venv
 source .venv/bin/activate
 
 # 4. Install dependencies
-cd ../..
-pip install -e shared/
-cd components/embedding-generator
+pip install -e ../shared/
 pip install -e ".[dev]"
 
 # 5. Implement your code

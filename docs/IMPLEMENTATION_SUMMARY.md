@@ -8,9 +8,9 @@ This document summarizes the complete implementation of the AI Toolkit AI develo
 
 ### ✅ 1. Shared Infrastructure
 
-**Location**: `shared/`
+**Location**: `components/shared/`
 
-- **Data Models** (`shared/schemas/`):
+- **Data Models** (`components/shared/schemas/`):
   - `Document`: Standard document schema with content, metadata, and tables
   - `Chunk`: Standard chunk schema for text splitting
   - `APIResponse`: Standard API response wrapper with status, data, error, metadata

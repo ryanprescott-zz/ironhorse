@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
 RUN pip install uv
 
 # Copy shared schemas
-COPY shared/ /app/shared/
+COPY components/shared/ /app/shared/
 
 # Copy component files
 COPY components/langchain-splitter/ /app/langchain-splitter/

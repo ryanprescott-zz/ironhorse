@@ -17,9 +17,9 @@ AI Toolkit is a comprehensive toolkit for building AI development projects, prov
 project-root/
 ├── components/              # Reusable component collection
 │   ├── docling-parser/     # Document parser using Docling
-│   └── langchain-splitter/ # Text splitter using LangChain
-├── shared/                  # Shared schemas and utilities
-│   └── schemas/            # Common data models (Document, Chunk, APIResponse)
+│   ├── langchain-splitter/ # Text splitter using LangChain
+│   └── shared/             # Shared schemas and utilities
+│       └── schemas/        # Common data models (Document, Chunk, APIResponse)
 ├── integrations/           # Orchestrator integrations
 │   └── orchestrators/
 │       └── n8n/           # N8N orchestrator bindings and workflows
@@ -215,7 +215,7 @@ See [Template Documentation](templates/README.md) for details.
 pytest
 
 # Run with coverage
-pytest --cov=components --cov=shared --cov-report=html
+pytest --cov=components --cov-report=html
 
 # Run specific component tests
 pytest components/docling-parser/tests/
@@ -237,7 +237,7 @@ black .
 ruff check .
 
 # Type check
-mypy components/ shared/
+mypy components/
 ```
 
 ## Architecture
