@@ -1,0 +1,165 @@
+{
+  "name": "Basic RAG Pipeline",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "start",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://docling-parser:26000/api/v1/parse/single",
+        "options": {},
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "file_path",
+              "value": "={{ $json[\"file_path\"] }}"
+            },
+            {
+              "name": "extract_tables",
+              "value": "true"
+            }
+          ]
+        }
+      },
+      "id": "parse_document",
+      "name": "Parse Document",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 300],
+      "notes": "Parse document using Docling Parser"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://langchain-splitter:26001/api/v1/split/document",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "document",
+              "value": "={{ $json[\"data\"] }}"
+            },
+            {
+              "name": "chunk_size",
+              "value": "1000"
+            },
+            {
+              "name": "chunk_overlap",
+              "value": "200"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        }
+      },
+      "id": "split_document",
+      "name": "Split Document",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [650, 300],
+      "notes": "Split parsed document into chunks using LangChain Splitter"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "chunk_count",
+              "value": "={{ $json[\"metadata\"][\"chunk_count\"] }}"
+            },
+            {
+              "name": "processing_time_ms",
+              "value": "={{ $json[\"metadata\"][\"processing_time_ms\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "extract_metadata",
+      "name": "Extract Metadata",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [850, 300],
+      "notes": "Extract chunk metadata"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.chunks",
+        "options": {}
+      },
+      "id": "split_out_chunks",
+      "name": "Split Out Chunks",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [1050, 300],
+      "notes": "Split chunks into individual items for downstream processing"
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Parse Document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Document": {
+      "main": [
+        [
+          {
+            "node": "Split Document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Document": {
+      "main": [
+        [
+          {
+            "node": "Extract Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Metadata": {
+      "main": [
+        [
+          {
+            "node": "Split Out Chunks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "1"
+}

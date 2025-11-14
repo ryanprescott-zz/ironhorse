@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # Docling Parser Component
+  docling-parser:
+    build:
+      context: .
+      dockerfile: platform/docker/components/docling-parser/Dockerfile
+    container_name: ai-toolkit-docling-parser
+    ports:
+      - "26000:26000"
+    environment:
+      - DOCLING_PARSER_HOST=0.0.0.0
+      - DOCLING_PARSER_PORT=26000
+      - DOCLING_PARSER_LOG_LEVEL=INFO
+    volumes:
+      # Mount a directory for test documents
+      - ./data/documents:/data/documents:ro
+    networks:
+      - ai-toolkit-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:26000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # LangChain Splitter Component
+  langchain-splitter:
+    build:
+      context: .
+      dockerfile: platform/docker/components/langchain-splitter/Dockerfile
+    container_name: ai-toolkit-langchain-splitter
+    ports:
+      - "26001:26001"
+    environment:
+      - LANGCHAIN_SPLITTER_HOST=0.0.0.0
+      - LANGCHAIN_SPLITTER_PORT=26001
+      - LANGCHAIN_SPLITTER_LOG_LEVEL=INFO
+      - LANGCHAIN_SPLITTER_DEFAULT_CHUNK_SIZE=1000
+      - LANGCHAIN_SPLITTER_DEFAULT_CHUNK_OVERLAP=200
+    networks:
+      - ai-toolkit-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:26001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # N8N Orchestrator
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: ai-toolkit-n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=admin
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+    volumes:
+      # Persist n8n data
+      - n8n-data:/home/node/.n8n
+      # Mount workflow templates
+      - ./integrations/orchestrators/n8n/pipelines:/workflows:ro
+    networks:
+      - ai-toolkit-network
+    depends_on:
+      - docling-parser
+      - langchain-splitter
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  ai-toolkit-network:
+    driver: bridge
+    name: ai-toolkit-network
+
+volumes:
+  n8n-data:
+    name: ai-toolkit-n8n-data

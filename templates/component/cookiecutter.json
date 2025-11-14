@@ -1,0 +1,8 @@
+{
+  "component_name": "my-component",
+  "component_class_name": "MyComponent",
+  "component_description": "A reusable component for AI toolkit",
+  "component_port": "26000",
+  "author": "AI Toolkit Team",
+  "python_version": "3.11"
+}
