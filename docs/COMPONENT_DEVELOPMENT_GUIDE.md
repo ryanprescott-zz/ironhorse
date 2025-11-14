@@ -126,6 +126,10 @@ components/
 
 ## Python Environment Setup
 
+> **📖 For detailed Python environment and testing instructions, see [Python Environment Setup Guide](PYTHON_ENVIRONMENT_SETUP.md)**
+
+This section provides a quick overview. For comprehensive instructions including troubleshooting, advanced testing options, and best practices, refer to the dedicated guide.
+
 ### Option 1: Using venv (Standard Python)
 
 #### 1.1 Create Virtual Environment

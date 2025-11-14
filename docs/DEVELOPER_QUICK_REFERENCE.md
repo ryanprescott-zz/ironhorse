@@ -4,6 +4,7 @@ Quick reference for common AI Toolkit development tasks.
 
 ## Quick Links
 
+- 🐍 [Python Environment Setup](PYTHON_ENVIRONMENT_SETUP.md) - **Start here for testing**
 - 📖 [Full Development Guide](COMPONENT_DEVELOPMENT_GUIDE.md)
 - 🚀 [Quick Start](../QUICKSTART.md)
 - 📚 [Main README](../README.md)
@@ -56,6 +57,8 @@ pip install -e ".[dev]"
 ## Development Workflow
 
 ### Running Tests
+
+> **📖 See [Python Environment Setup](PYTHON_ENVIRONMENT_SETUP.md) for complete testing guide**
 
 ```bash
 # All tests

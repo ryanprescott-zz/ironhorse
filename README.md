@@ -139,9 +139,15 @@ See [N8N Integration Guide](integrations/orchestrators/n8n/bindings/README.md) f
 
 Comprehensive guides for component development:
 
-- **📘 [Component Development Guide](docs/COMPONENT_DEVELOPMENT_GUIDE.md)** - Complete guide for creating new components from scratch, including:
+- **🐍 [Python Environment Setup](docs/PYTHON_ENVIRONMENT_SETUP.md)** - Complete guide for setting up your Python environment:
+  - Virtual environment creation and activation
+  - Installing dependencies and shared schemas
+  - Running tests with pytest
+  - Coverage reports and debugging
+  - Common issues and solutions
+
+- **📘 [Component Development Guide](docs/COMPONENT_DEVELOPMENT_GUIDE.md)** - Complete guide for creating new components from scratch:
   - Prerequisites and installation
-  - Python environment setup with uv
   - Cookie cutter usage
   - Step-by-step implementation
   - Testing, Docker integration, and orchestration
